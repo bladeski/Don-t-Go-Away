@@ -1,0 +1,38 @@
+<Page
+    x:Class="Dont_Go_Away.Views.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+	<Page.Transitions>
+        <TransitionCollection>
+            <NavigationThemeTransition />
+        </TransitionCollection>
+    </Page.Transitions>
+
+
+    <StackPanel Padding="20" Spacing="12">
+        <TextBlock Text="Settings" FontSize="24" FontWeight="Bold" />
+
+        <TextBlock Text="Idle Threshold (ms)" />
+        <TextBox Text="{Binding IdleThresholdMs}" />
+
+        <TextBlock Text="Drift Box Size" />
+        <TextBox Text="{Binding DriftBoxSize}" />
+
+        <TextBlock Text="Step Delay (ms)" />
+        <TextBox Text="{Binding StepDelayMs}" />
+
+        <TextBlock Text="Max Step" />
+        <TextBox Text="{Binding MaxStep}" />
+
+        <TextBlock Text="Simulated Key" />
+        <TextBox Text="{Binding SimulatedKey}" />
+
+        <TextBlock Text="Shift Tap Chance" />
+        <TextBox Text="{Binding ShiftTapChance}" />
+
+        <Button Content="Save" Click="SaveButton_Click" />
+    </StackPanel>
+</Page>

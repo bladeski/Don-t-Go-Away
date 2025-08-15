@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Don't Go Away (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "Don't Go Away (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

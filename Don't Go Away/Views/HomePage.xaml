@@ -1,0 +1,14 @@
+<Page
+    x:Class="Dont_Go_Away.Views.HomePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel Padding="20">        
+                <TextBlock Text="Welcome to Don't Go Away"
+                           FontSize="20"
+                           FontWeight="SemiBold"
+                           Margin="0,0,0,10" />
+
+                <TextBlock Text="This app prevents your system from going idle by simulating subtle input." 
+                           TextWrapping="Wrap" />
+    </StackPanel>
+</Page>

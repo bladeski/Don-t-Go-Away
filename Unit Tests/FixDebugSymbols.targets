@@ -1,0 +1,21 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<Target Name="DebugSymbolsProjectOutputGroup">
+		<!-- Step 1: Collect .pdb files -->
+		<ItemGroup>
+			<_FixedDebugSymbolsIntermediatePath Include="$(IntermediateOutputPath)**\*.pdb" />
+		</ItemGroup>
+
+		<!-- Step 2: Apply metadata safely -->
+		<ItemGroup>
+			<DebugSymbolsProjectOutputGroupOutput Include="@(_FixedDebugSymbolsIntermediatePath)">
+				<FinalOutputPath>%(FullPath)</FinalOutputPath>
+				<TargetPath>%(Filename)%(Extension)</TargetPath>
+			</DebugSymbolsProjectOutputGroupOutput>
+		</ItemGroup>
+
+		<!-- Optional: Debug message -->
+		<Message Text="✅ Custom DebugSymbolsProjectOutputGroup executed" Importance="High" />
+	</Target>
+
+</Project>

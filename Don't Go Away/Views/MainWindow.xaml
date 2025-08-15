@@ -1,0 +1,78 @@
+﻿<Window
+    x:Class="Dont_Go_Away.Views.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Dont_Go_Away"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="Don't Go Away">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <!-- Header -->
+            <RowDefinition Height="Auto" />
+            <!-- Controls -->
+            <RowDefinition Height="*" />
+            <!-- Content -->
+        </Grid.RowDefinitions>
+
+        <!-- 🧭 Header Panel -->
+        <Border Grid.Row="0"
+                Background="{ThemeResource SystemControlBackgroundAccentBrush}"
+                Padding="16"
+                BorderBrush="{ThemeResource SystemControlForegroundBaseHighBrush}"
+                BorderThickness="0,0,0,1">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center" Spacing="12">
+                <TextBlock Text="Don't Go Away"
+                           FontSize="24"
+                           FontWeight="Bold"
+                           Foreground="White"
+                           VerticalAlignment="Center" />
+            </StackPanel>
+        </Border>
+        <Grid HorizontalAlignment="Stretch" Grid.Row="1" Padding="20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <ToggleSwitch x:Name="GoAwayToggle"
+                Grid.Column="0"
+                IsOn="False"
+                Toggled="GoAwayToggle_Toggled"
+                Header="Active"
+                VerticalAlignment="Center" />
+            <Button x:Name="SettingsButton"
+                Grid.Column="2"
+                Content="Settings"
+                Click="SettingsButton_Click"
+                Style="{StaticResource ButtonRevealStyle}" />
+            <Button x:Name="BackButton"
+                Grid.Column="2"
+                Content="← Back"
+                Click="BackButton_Click"
+                Visibility="Collapsed"
+                Style="{StaticResource ButtonRevealStyle}" />
+        </Grid>
+
+        <!-- 🧩 Scrollable Content -->
+        <ScrollViewer Grid.Row="2"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled"
+                      Padding="20">
+            <StackPanel Spacing="16">
+
+                <!-- Frame for dynamic pages -->
+                <Frame x:Name="RootFrame"
+                       Margin="0,20,0,0"
+                       BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                       BorderThickness="1"
+                       CornerRadius="8"
+                       Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}" />
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>
