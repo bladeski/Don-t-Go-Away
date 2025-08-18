@@ -20,8 +20,8 @@ jobs:
       with:
         dotnet-version: '8.0.x' # Change to your target version
 
-    - name: 📦 Restore dependencies
-      run: dotnet restore
+    - name: 📦 Restore dependencies with ReadyToRun
+      run: dotnet restore /p:PublishReadyToRun=true
 
     - name: 🏗️ Build project
       run: dotnet build --no-restore --configuration Release
