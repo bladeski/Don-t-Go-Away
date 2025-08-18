@@ -30,7 +30,7 @@ jobs:
       run: dotnet test --no-build --verbosity normal
       
     - name: 📦 Publish Windows Package
-      run: dotnet publish ./DontGoAway.Package/DontGoAway.Package.wapproj -c Release -o ./publish
+      run: dotnet publish ./MyApp.Package/MyApp.Package.wapproj -c Release -r win-x64 -o ./publish /p:PublishReadyToRun=true
 
     - name: 📤 Upload package artifact
       uses: actions/upload-artifact@v4
