@@ -48,6 +48,7 @@ jobs:
     - name: 📤 Upload Windows Package to Release
       uses: softprops/action-gh-release@v1
       with:
+        tag_name: v1.0.${{ github.run_number }}
         files: ./publish/*.msix
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
