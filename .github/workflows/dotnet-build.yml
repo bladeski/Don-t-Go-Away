@@ -1,0 +1,39 @@
+﻿name: 🔧 Build and Test .NET Project
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: 🏗️ Build and Test
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v3
+
+    - name: 🧰 Setup .NET SDK
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x' # Change to your target version
+
+    - name: 📦 Restore dependencies
+      run: dotnet restore
+
+    - name: 🏗️ Build project
+      run: dotnet build --no-restore --configuration Release
+
+    - name: 🧪 Run tests
+      run: dotnet test --no-build --verbosity normal
+      
+    - name: 📦 Publish Windows Package
+      run: dotnet publish ./DontGoAway.Package/DontGoAway.Package.wapproj -c Release -o ./publish
+
+    - name: 📤 Upload package artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: WindowsAppPackage
+        path: ./publish

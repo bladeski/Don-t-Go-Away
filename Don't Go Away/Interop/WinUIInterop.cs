@@ -1,4 +1,4 @@
-﻿using Dont_Go_Away.Helpers;
+﻿using Core_Logic.Domain.Interfaces;
 using Microsoft.UI.Xaml;
 using System;
 using System.Runtime.InteropServices;
@@ -60,7 +60,7 @@ namespace Dont_Go_Away.Interop
         /// <param name="window">The window to center.</param>
         /// <param name="windowWidth">Window width in pixels.</param>
         /// <param name="windowHeight">Window height in pixels.</param>
-        public static void CenterWindow(Window window, int windowWidth, int windowHeight)
+        public static void CenterWindow(Window window, int windowWidth, int windowHeight, ILogger logger)
         {
             try
             {
@@ -80,13 +80,13 @@ namespace Dont_Go_Away.Interop
                 if (!success)
                 {
                     int error = Marshal.GetLastWin32Error();
-                    Logger.LogError($"SetWindowPos failed with error code: {error}");
+                    logger.LogError($"SetWindowPos failed with error code: {error}");
                     throw new InvalidOperationException($"SetWindowPos failed. Win32 Error: {error}");
                 }
             }
             catch (Exception ex)
             {
-                Logger.LogError("CenterWindow error", ex);
+                logger.LogError("CenterWindow error", ex);
                 throw;
             }
         }

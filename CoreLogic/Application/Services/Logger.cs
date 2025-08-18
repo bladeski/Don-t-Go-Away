@@ -1,18 +1,18 @@
-using System;
-using System.IO;
+using Core_Logic.Domain.Interfaces;
 
-namespace Dont_Go_Away.Helpers
+namespace Core_Logic.Application.Services
 {
     /// <summary>
     /// Provides simple thread-safe logging to a file.
     /// </summary>
-    public static class Logger
+    public class Logger : ILogger
     {
         private static readonly string LogFilePath =
             Path.Combine(AppContext.BaseDirectory, "Logs", $"log_{DateTime.Now:yyyyMMdd}.txt");
         private static readonly object _lock = new();
 
-        static Logger()
+        // Private constructor to prevent external instantiation
+        public Logger()
         {
             var logDir = Path.GetDirectoryName(LogFilePath);
             if (!Directory.Exists(logDir))
@@ -23,7 +23,7 @@ namespace Dont_Go_Away.Helpers
         /// Logs an informational message.
         /// </summary>
         /// <param name="message">The message to log.</param>
-        public static void Log(string message)
+        public void Log(string message)
         {
             Write("INFO", message);
         }
@@ -33,7 +33,7 @@ namespace Dont_Go_Away.Helpers
         /// </summary>
         /// <param name="message">The error message.</param>
         /// <param name="ex">The exception (optional).</param>
-        public static void LogError(string message, Exception? ex = null)
+        public void LogError(string message, Exception? ex = null)
         {
             Write("ERROR", $"{message}{(ex != null ? $": {ex}" : string.Empty)}");
         }

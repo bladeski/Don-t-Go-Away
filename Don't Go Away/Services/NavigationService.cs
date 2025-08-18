@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml.Controls;
+﻿using Core_Logic.Domain.Interfaces.Services;
+using Microsoft.UI.Xaml.Controls;
 using System;
 
 namespace Dont_Go_Away.Services
@@ -6,16 +7,17 @@ namespace Dont_Go_Away.Services
     /// <summary>
     /// Provides centralized navigation functionality for the application's main frame.
     /// </summary>
-    public static class NavigationService
+    public class NavigationService<Frame> : INavigationService<Frame>
+        where Frame : Microsoft.UI.Xaml.Controls.Frame
     {
-        private static Frame? _rootFrame;
+        private Frame? _rootFrame;
 
         /// <summary>
         /// Initializes the navigation service with the application's root frame.
         /// </summary>
         /// <param name="rootFrame">The root <see cref="Frame"/> used for navigation.</param>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="rootFrame"/> is null.</exception>
-        public static void Initialize(Frame rootFrame)
+        public void Initialize(Frame rootFrame)
         {
             _rootFrame = rootFrame ?? throw new ArgumentNullException(nameof(rootFrame));
         }
@@ -27,7 +29,7 @@ namespace Dont_Go_Away.Services
         /// <param name="parameter">An optional parameter to pass to the page.</param>
         /// <returns>True if navigation was successful; otherwise, false.</returns>
         /// <exception cref="InvalidOperationException">Thrown if the navigation service is not initialized.</exception>
-        public static bool Navigate(Type pageType, object? parameter = null)
+        public bool Navigate(Type pageType, object? parameter = null)
         {
             if (_rootFrame == null)
                 throw new InvalidOperationException("NavigationService not initialized.");
@@ -38,7 +40,7 @@ namespace Dont_Go_Away.Services
         /// <summary>
         /// Navigates back to the previous page in the navigation stack, if possible.
         /// </summary>
-        public static void GoBack()
+        public void GoBack()
         {
             if (_rootFrame?.CanGoBack == true)
                 _rootFrame.GoBack();
@@ -47,6 +49,6 @@ namespace Dont_Go_Away.Services
         /// <summary>
         /// Gets a value indicating whether navigation back is possible.
         /// </summary>
-        public static bool CanGoBack => _rootFrame?.CanGoBack == true;
+        public bool CanGoBack => _rootFrame?.CanGoBack == true;
     }
 }

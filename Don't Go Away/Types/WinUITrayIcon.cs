@@ -1,6 +1,5 @@
 ﻿using Dont_Go_Away.Helpers;
 using Dont_Go_Away.Interop;
-using Dont_Go_Away.Services;
 using Dont_Go_Away.Views;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -9,6 +8,9 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using WinRT.Interop;
+using Core_Logic.Domain.Interfaces;
+using Core_Logic.Infrastructure.Interop;
+using Core_Logic.Domain.Interfaces.Services;
 
 namespace Dont_Go_Away.Types
 {
@@ -42,7 +44,9 @@ namespace Dont_Go_Away.Types
         // ─────────────────────────────────────────────────────────────
         // 🔧 Fields
         // ─────────────────────────────────────────────────────────────
-
+        private readonly IDriftService _driftService;
+        private readonly INavigationService<Frame> _navigationService;
+        private readonly ILogger _logger;
         private readonly Window _window;
         private readonly nint _hWnd;
         private readonly uint _uID = 0x1;
@@ -67,7 +71,15 @@ namespace Dont_Go_Away.Types
         /// <param name="tooltip">The tooltip text.</param>
         /// <param name="onDoubleClick">Action to perform on double-click.</param>
         /// <exception cref="ArgumentNullException">Thrown if any required argument is null.</exception>
-        public WinUITrayIcon(Window window, Icon icon, string tooltip, Action onDoubleClick)
+        public WinUITrayIcon(
+            Window window, 
+            Icon icon, 
+            string tooltip, 
+            Action onDoubleClick,
+            IDriftService driftService,
+            INavigationService<Frame> navigationService,
+            ILogger logger
+        )
         {
             _window = window ?? throw new ArgumentNullException(nameof(window));
             _tooltip = tooltip ?? string.Empty;
@@ -77,6 +89,10 @@ namespace Dont_Go_Away.Types
             _hWnd = WinUIInterop.GetWindowHandle(window);
             AddTrayIcon();
             SubclassWindow();
+
+            _driftService = driftService ?? throw new ArgumentNullException(nameof(driftService));
+            _navigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         // ─────────────────────────────────────────────────────────────
@@ -101,7 +117,7 @@ namespace Dont_Go_Away.Types
 
             if (!Shell_NotifyIcon(NotifyIconConstants.NIM_ADD, ref data))
             {
-                Logger.LogError("Failed to add tray icon.");
+                _logger.LogError("Failed to add tray icon.");
             }
         }
 
@@ -119,7 +135,7 @@ namespace Dont_Go_Away.Types
 
             if (!Shell_NotifyIcon(NotifyIconConstants.NIM_DELETE, ref data))
             {
-                Logger.LogError("Failed to remove tray icon.");
+                _logger.LogError("Failed to remove tray icon.");
             }
         }
 
@@ -142,7 +158,7 @@ namespace Dont_Go_Away.Types
 
             if (!Shell_NotifyIcon(NotifyIconConstants.NIM_MODIFY, ref iconData))
             {
-                Logger.LogError("Failed to update tray icon.");
+                _logger.LogError("Failed to update tray icon.");
             }
         }
 
@@ -163,7 +179,7 @@ namespace Dont_Go_Away.Types
 
             if (!Shell_NotifyIcon(NotifyIconConstants.NIM_MODIFY, ref iconData))
             {
-                Logger.LogError("Failed to update tray tooltip.");
+                _logger.LogError("Failed to update tray tooltip.");
             }
         }
 
@@ -187,7 +203,7 @@ namespace Dont_Go_Away.Types
 
             if (!Shell_NotifyIcon(NotifyIconConstants.NIM_MODIFY, ref data))
             {
-                Logger.LogError("Failed to show balloon tip.");
+                _logger.LogError("Failed to show balloon tip.");
             }
         }
 
@@ -209,7 +225,7 @@ namespace Dont_Go_Away.Types
             }
             catch (Exception ex)
             {
-                Logger.LogError("Failed to subclass window", ex);
+                _logger.LogError("Failed to subclass window", ex);
             }
         }
 
@@ -256,7 +272,7 @@ namespace Dont_Go_Away.Types
             }
             catch (Exception ex)
             {
-                Logger.LogError("CustomWndProc error", ex);
+                _logger.LogError("CustomWndProc error", ex);
             }
 
             return NativeMethods.CallWindowProc(_oldWndProc, hWnd, msg, wParam, lParam);
@@ -270,7 +286,7 @@ namespace Dont_Go_Away.Types
             var hMenu = CreatePopupMenu();
             AppendMenu(hMenu, Win32Constants.MF_STRING, 1, "Show Window");
             AppendMenu(hMenu, Win32Constants.MF_STRING, 2, "Settings");
-            var driftLabel = DriftService.Instance?.IsRunning == true ? "Stop Service" : "Start Service";
+            var driftLabel = _driftService.IsRunning == true ? "Stop Service" : "Start Service";
             AppendMenu(hMenu, Win32Constants.MF_STRING, 3, driftLabel);
             AppendMenu(hMenu, Win32Constants.MF_STRING, 4, "Exit");
 
@@ -288,11 +304,11 @@ namespace Dont_Go_Away.Types
                     _window.DispatcherQueue.TryEnqueue(() =>
                     {
                         App.MainWindowInstance?.Activate();
-                        NavigationService.Navigate(typeof(SettingsPage));
+                        _navigationService.Navigate(typeof(SettingsPage));
                     });
                     break;
                 case 3:
-                    _window.DispatcherQueue.TryEnqueue(() => DriftService.Instance?.Toggle());
+                    _window.DispatcherQueue.TryEnqueue(() => _driftService.Toggle());
                     break;
                 case 4:
                     _window.DispatcherQueue.TryEnqueue(async () =>
@@ -343,14 +359,14 @@ namespace Dont_Go_Away.Types
             }
             catch (Exception ex)
             {
-                Logger.LogError("Failed to hide main window", ex);
+                _logger.LogError("Failed to hide main window", ex);
             }
         }
 
         /// <summary>
         /// Brings the main window to the foreground.
         /// </summary>
-        private static void BringMainWindowToFront()
+        private void BringMainWindowToFront()
         {
             try
             {
@@ -360,7 +376,7 @@ namespace Dont_Go_Away.Types
             }
             catch (Exception ex)
             {
-                Logger.LogError("Failed to bring window to front", ex);
+                _logger.LogError("Failed to bring window to front", ex);
             }
         }
     }

@@ -1,7 +1,7 @@
 // Don't Go Away\Interop\POINT.cs
 using System.Runtime.InteropServices;
 
-namespace Dont_Go_Away.Interop
+namespace Core_Logic.Infrastructure.Interop
 {
     /// <summary>
     /// Represents a point (x, y) in screen coordinates for Win32 API interop.

@@ -1,5 +1,6 @@
 using System.IO;
-using Dont_Go_Away.Config;
+using Core_Logic.Config;
+using Core_Logic.Domain.Interfaces;
 using Xunit;
 
 public class ConfigLoaderTests
@@ -7,7 +8,8 @@ public class ConfigLoaderTests
     [Fact]
     public void Load_ReturnsDefault_WhenFileMissing()
     {
-        var config = ConfigLoader.Load<DriftConfig>("nonexistent.json");
+        IConfigLoader configLoader = new ConfigLoader();
+        var config = configLoader.Load<DriftConfig>("nonexistent.json");
         Assert.NotNull(config);
         Assert.Equal(120000, config.IdleThresholdMs);
     }
@@ -15,11 +17,12 @@ public class ConfigLoaderTests
     [Fact]
     public void SaveAndLoad_RoundTrip_Works()
     {
+        IConfigLoader configLoader = new ConfigLoader();
         var path = Path.GetTempFileName();
         var original = new DriftConfig { IdleThresholdMs = 12345, SimulatedKey = "A" };
-        ConfigLoader.Save(original, path);
+        configLoader.Save(original, path);
 
-        var loaded = ConfigLoader.Load<DriftConfig>(path);
+        var loaded = configLoader.Load<DriftConfig>(path);
         Assert.Equal(12345, loaded.IdleThresholdMs);
         Assert.Equal("A", loaded.SimulatedKey);
 

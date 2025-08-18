@@ -1,4 +1,4 @@
-﻿namespace Dont_Go_Away.Config
+﻿namespace Core_Logic.Config
 {
     /// <summary>
     /// Represents configuration options for the drift service.

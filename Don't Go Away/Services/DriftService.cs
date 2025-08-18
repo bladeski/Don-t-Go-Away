@@ -1,24 +1,22 @@
-﻿using Dont_Go_Away.Config;
-using Dont_Go_Away.Helpers;
+﻿using Core_Logic.Config;
+using Core_Logic.Domain.Interfaces;
+using Core_Logic.Domain.Types;
+using Core_Logic.Infrastructure.Interop;
 using Dont_Go_Away.Interop;
-using Dont_Go_Away.Types;
+using InputSimulatorEx;
+using InputSimulatorEx.Native;
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using WindowsInput;
-using WindowsInput.Native;
 
 namespace Dont_Go_Away.Services
 {
     /// <summary>
     /// Provides functionality to simulate user activity (drifting) to prevent system idle.
     /// </summary>
-    public class DriftService
+    public class DriftService : IDriftService
     {
-        public static DriftService? Instance { get; private set; }
 
         /// <summary>
         /// Occurs when the drift state changes (started or stopped).
@@ -30,19 +28,21 @@ namespace Dont_Go_Away.Services
         private readonly Random rand;
         private CancellationTokenSource? _cts;
         private Task? _driftTask;
+        private readonly ILogger _logger;
+
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DriftService"/> class.
         /// </summary>
         /// <param name="configPath">The path to the configuration file.</param>
         [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Config loading uses reflection")]
-        public DriftService(string configPath = "config.json")
+        public DriftService(ILogger logger, IConfigLoader configLoader, string configPath = "config.json")
         {
-            var config = ConfigLoader.Load<DriftConfig>(configPath);
+            var config = configLoader.Load<DriftConfig>(configPath);
             this.config = config;
             sim = new InputSimulator();
             rand = new Random();
-            Instance = this;
+            _logger = logger;
         }
 
         public bool IsRunning => _driftTask is { IsCompleted: false };
@@ -131,7 +131,7 @@ namespace Dont_Go_Away.Services
                             }
                             else
                             {
-                                Logger.LogError("Failed to get cursor position.");
+                                _logger.LogError("Failed to get cursor position.");
                                 continue;
                             }
                         }
@@ -145,7 +145,7 @@ namespace Dont_Go_Away.Services
 
                         if (!User32Interop.SetCursorPos(currentX, currentY))
                         {
-                            Logger.LogError("Failed to set cursor position.");
+                            _logger.LogError("Failed to set cursor position.");
                         }
 
                         if (shiftChance > 0 && rand.NextDouble() < shiftChance)
@@ -166,12 +166,12 @@ namespace Dont_Go_Away.Services
                 }
                 catch (OperationCanceledException)
                 {
-                    Logger.Log("Drift task cancelled.");
+                    _logger.Log("Drift task cancelled.");
                     break;
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError("Drift loop error", ex);
+                    _logger.LogError("Drift loop error", ex);
                 }
             }
         }
@@ -180,7 +180,7 @@ namespace Dont_Go_Away.Services
         /// Gets the system idle time in milliseconds.
         /// </summary>
         /// <returns>The idle time in milliseconds.</returns>
-        private static uint GetIdleTime()
+        private uint GetIdleTime()
         {
             LASTINPUTINFO lastInput = new()
             {
@@ -189,7 +189,7 @@ namespace Dont_Go_Away.Services
 
             if (!User32Interop.GetLastInputInfo(ref lastInput))
             {
-                Logger.LogError("GetLastInputInfo failed.");
+                _logger.LogError("GetLastInputInfo failed.");
                 return 0;
             }
 
@@ -197,37 +197,11 @@ namespace Dont_Go_Away.Services
         }
 
         /// <summary>
-        /// Loads the drift configuration from a file.
-        /// </summary>
-        /// <param name="path">The path to the config file.</param>
-        /// <returns>The loaded <see cref="DriftConfig"/>.</returns>
-        [RequiresUnreferencedCode("Uses reflection for deserialization")]
-        private static DriftConfig LoadConfig(string path)
-        {
-            try
-            {
-                if (!File.Exists(path))
-                {
-                    Logger.Log("Config file not found. Using defaults.");
-                    return new DriftConfig();
-                }
-
-                string json = File.ReadAllText(path);
-                return JsonSerializer.Deserialize<DriftConfig>(json) ?? new DriftConfig();
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError($"Failed to load config: {ex.Message}. Using defaults.", ex);
-                return new DriftConfig();
-            }
-        }
-
-        /// <summary>
         /// Parses a string to a <see cref="VirtualKeyCode"/>.
         /// </summary>
         /// <param name="keyName">The key name as a string.</param>
         /// <returns>The parsed <see cref="VirtualKeyCode"/>.</returns>
-        private static VirtualKeyCode ParseKey(string keyName)
+        private VirtualKeyCode ParseKey(string keyName)
         {
             try
             {
@@ -235,7 +209,7 @@ namespace Dont_Go_Away.Services
             }
             catch
             {
-                Logger.LogError($"Invalid key '{keyName}' in config. Defaulting to SHIFT.");
+                _logger.LogError($"Invalid key '{keyName}' in config. Defaulting to SHIFT.");
                 return VirtualKeyCode.SHIFT;
             }
         }

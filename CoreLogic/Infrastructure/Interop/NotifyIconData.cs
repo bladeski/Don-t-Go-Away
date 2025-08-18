@@ -1,7 +1,6 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
-namespace Dont_Go_Away.Interop
+namespace Core_Logic.Infrastructure.Interop
 {
     /// <summary>
     /// Represents the NOTIFYICONDATA structure used for tray icon operations.

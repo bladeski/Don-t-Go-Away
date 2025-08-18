@@ -1,4 +1,4 @@
-﻿namespace Dont_Go_Away.Interop
+﻿namespace Core_Logic.Infrastructure.Interop
 {
     /// <summary>
     /// Flags for NOTIFYICONDATA structure to specify which members are valid.

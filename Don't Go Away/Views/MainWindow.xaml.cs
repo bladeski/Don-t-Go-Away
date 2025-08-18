@@ -1,8 +1,10 @@
-﻿using Dont_Go_Away.Helpers;
+﻿using Core_Logic.Domain.Interfaces;
+using Core_Logic.Domain.Interfaces.Services;
+using Core_Logic.Domain.Types;
 using Dont_Go_Away.Interop;
-using Dont_Go_Away.Services;
 using Dont_Go_Away.Types;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Drawing;
@@ -16,22 +18,32 @@ namespace Dont_Go_Away.Views
     /// </summary>
     public sealed partial class MainWindow : Window, IDisposable
     {
-        private readonly DriftService? _driftService;
+        private readonly IDriftService? _driftService;
+        private readonly INavigationService<Frame> _navigationService;
         private readonly WinUITrayIcon? _trayIcon;
 
         private readonly Icon? _activeIcon;
         private readonly Icon? _inactiveIcon;
+        private readonly ILogger _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MainWindow"/> class.
         /// </summary>
-        public MainWindow()
+        public MainWindow(
+            IDriftService driftService,
+            INavigationService<Frame> navigationService,
+            ILogger logger, 
+            IConfigLoader configLoader
+        )
         {
-            this.InitializeComponent();
-            NavigationService.Initialize(RootFrame);
-            RootFrame.Navigate(typeof(HomePage));
-            RootFrame.Navigated += OnNavigated;
+            _driftService = driftService;
+            _navigationService = navigationService;
+            _logger = logger;
 
+            this.InitializeComponent();
+            _navigationService.Initialize(RootFrame);
+            _navigationService.Navigate(typeof(HomePage));
+            RootFrame.Navigated += OnNavigated;
 
             try
             {
@@ -42,26 +54,28 @@ namespace Dont_Go_Away.Views
                     this,
                     _inactiveIcon,
                     "Don't Go Away",
-                    () => Activate()
+                    () => Activate(),
+                    _driftService,
+                    _navigationService,
+                    _logger
                 );
 
-                _driftService = new DriftService();
                 _driftService.DriftStateChanged += OnDriftStateChanged;
 
-                WinUIInterop.CenterWindow(this, 640, 480);
+                WinUIInterop.CenterWindow(this, 640, 480, _logger);
             }
             catch (Exception ex)
             {
-                Logger.LogError("MainWindow initialization failed", ex);
+                _logger.LogError("MainWindow initialization failed", ex);
             }
         }
 
         private void OnNavigated(object sender, NavigationEventArgs e)
         {
-            BackButton.Visibility = NavigationService.CanGoBack
+            BackButton.Visibility = _navigationService.CanGoBack
                 ? Visibility.Visible
                 : Visibility.Collapsed;
-            SettingsButton.Visibility = NavigationService.CanGoBack
+            SettingsButton.Visibility = _navigationService.CanGoBack
                 ? Visibility.Collapsed
                 : Visibility.Visible;
             RootFrame.Visibility = RootFrame.Content == null
@@ -71,7 +85,7 @@ namespace Dont_Go_Away.Views
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService.GoBack();
+            _navigationService.GoBack();
         }
 
         /// <summary>
@@ -87,7 +101,7 @@ namespace Dont_Go_Away.Views
                     _driftService?.Start();
                     if (RootFrame.Content.GetType() == typeof(SettingsPage))
                     {
-                        NavigationService.GoBack();
+                        _navigationService.GoBack();
                     }
                 }
                 else
@@ -97,7 +111,7 @@ namespace Dont_Go_Away.Views
             }
             catch (Exception ex)
             {
-                Logger.LogError("Toggle error", ex);
+                _logger.LogError("Toggle error", ex);
             }
         }
 
@@ -109,11 +123,11 @@ namespace Dont_Go_Away.Views
         /// <param name="e">The event arguments.</param>
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService.Navigate(typeof(SettingsPage));
+            _navigationService.Navigate(typeof(SettingsPage));
 
             if (App.MainWindowInstance == null)
             {
-                Logger.LogError("MainWindowInstance is null, cannot navigate to SettingsPage.");
+                _logger.LogError("MainWindowInstance is null, cannot navigate to SettingsPage.");
                 return;
             }
         }
@@ -135,7 +149,7 @@ namespace Dont_Go_Away.Views
             }
             catch (Exception ex)
             {
-                Logger.LogError("DriftStateChanged error", ex);
+                _logger.LogError("DriftStateChanged error", ex);
             }
         }
 
@@ -145,13 +159,13 @@ namespace Dont_Go_Away.Views
         /// <param name="fileName">The icon file name.</param>
         /// <returns>The loaded <see cref="Icon"/>.</returns>
         /// <exception cref="FileNotFoundException">Thrown if the icon file is missing.</exception>
-        private static Icon LoadIcon(string fileName)
+        private Icon LoadIcon(string fileName)
         {
             string path = Path.Combine(AppContext.BaseDirectory, "Assets", fileName);
 
             if (!File.Exists(path))
             {
-                Logger.LogError($"Icon file not found: {path}");
+                _logger.LogError($"Icon file not found: {path}");
                 throw new FileNotFoundException("Icon file missing", path);
             }
 

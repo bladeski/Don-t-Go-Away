@@ -1,13 +1,12 @@
-using System;
-using System.IO;
+using Core_Logic.Domain.Interfaces;
 using System.Text.Json;
 
-namespace Dont_Go_Away.Config
+namespace Core_Logic.Application.Services
 {
     /// <summary>
-    /// Provides static methods for loading and saving configuration objects.
+    /// Provides instance methods for loading and saving configuration objects.
     /// </summary>
-    public static class ConfigLoader
+    public class ConfigLoader : IConfigLoader
     {
         /// <summary>
         /// Loads a configuration object from the specified file path.
@@ -16,7 +15,7 @@ namespace Dont_Go_Away.Config
         /// <typeparam name="T">The configuration type.</typeparam>
         /// <param name="path">The path to the configuration file.</param>
         /// <returns>The loaded configuration object.</returns>
-        public static T Load<T>(string path) where T : new()
+        public T Load<T>(string path) where T : new()
         {
             try
             {
@@ -26,9 +25,8 @@ namespace Dont_Go_Away.Config
                 var json = File.ReadAllText(path);
                 return JsonSerializer.Deserialize<T>(json) ?? new T();
             }
-            catch (Exception ex)
+            catch
             {
-                // Optionally log error here if you have a logger available
                 return new T();
             }
         }
@@ -39,7 +37,7 @@ namespace Dont_Go_Away.Config
         /// <typeparam name="T">The configuration type.</typeparam>
         /// <param name="config">The configuration object to save.</param>
         /// <param name="path">The path to the configuration file.</param>
-        public static void Save<T>(T config, string path)
+        public void Save<T>(T config, string path)
         {
             var json = JsonSerializer.Serialize(config, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(path, json);

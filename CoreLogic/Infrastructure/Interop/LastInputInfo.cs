@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace Dont_Go_Away.Interop
+namespace Core_Logic.Infrastructure.Interop
 {
     /// <summary>
     /// Represents the LASTINPUTINFO structure for retrieving the time of the last input event.

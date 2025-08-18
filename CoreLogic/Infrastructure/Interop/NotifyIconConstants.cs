@@ -1,4 +1,4 @@
-﻿namespace Dont_Go_Away.Interop
+﻿namespace Core_Logic.Infrastructure.Interop
 {
     /// <summary>
     /// Contains constants for tray icon operations and custom messages.

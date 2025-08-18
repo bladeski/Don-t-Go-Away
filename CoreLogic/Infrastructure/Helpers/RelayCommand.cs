@@ -1,7 +1,6 @@
-﻿using System;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 
-namespace Dont_Go_Away.Helpers
+namespace Core_Logic.Infrastructure.Helpers
 {
     /// <summary>
     /// A simple implementation of <see cref="ICommand"/> for relaying actions.

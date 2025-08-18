@@ -1,4 +1,4 @@
-using Dont_Go_Away.Config;
+using Core_Logic.Config;
 using Xunit;
 
 public class DriftConfigEdgeTests

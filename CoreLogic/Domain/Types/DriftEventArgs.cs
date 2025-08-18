@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Dont_Go_Away.Types
+﻿namespace Core_Logic.Domain.Types
 {
     /// <summary>
     /// Provides data for the drift state change event.

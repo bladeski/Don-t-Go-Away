@@ -1,9 +1,10 @@
-﻿using Dont_Go_Away.Config;
+﻿using Core_Logic.Config;
 using Dont_Go_Away.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
 using System.IO;
+using Core_Logic.Domain.Interfaces;
 
 namespace Dont_Go_Away.Views
 {
@@ -14,20 +15,22 @@ namespace Dont_Go_Away.Views
     public sealed partial class SettingsPage : Page
     {
         private readonly SettingsViewModel _viewModel;
+        private readonly IConfigLoader _loader;
 
-        public SettingsPage()
+        public SettingsPage(IConfigLoader loader)
         {
             this.InitializeComponent();
+            _loader = loader ?? throw new ArgumentNullException(nameof(loader));
 
             var configPath = Path.Combine(AppContext.BaseDirectory, "config.json");
-            var config = ConfigLoader.Load<DriftConfig>(configPath);
+            var config = _loader.Load<DriftConfig>(configPath);
             _viewModel = new SettingsViewModel(config);
             this.DataContext = _viewModel;
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            ConfigLoader.Save(_viewModel.Config, "config.json");
+            _loader.Save(_viewModel.Config, "config.json");
         }
     }
 }

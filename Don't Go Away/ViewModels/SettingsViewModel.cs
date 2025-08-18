@@ -1,5 +1,4 @@
-﻿using Dont_Go_Away.Types;
-using Dont_Go_Away.Config;
+﻿using Core_Logic.Config;
 using System.ComponentModel;
 
 namespace Dont_Go_Away.ViewModels
