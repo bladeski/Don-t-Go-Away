@@ -18,7 +18,7 @@ jobs:
     - name: 🧰 Setup .NET SDK
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '8.0.x' # Change to your target version
+        dotnet-version: '8.0.x'
 
     - name: 📦 Restore dependencies with ReadyToRun
       run: dotnet restore /p:RuntimeIdentifier=win-x64 /p:PublishReadyToRun=true
@@ -30,7 +30,7 @@ jobs:
       run: dotnet test --no-build --verbosity normal
       
     - name: 📦 Publish Windows Package
-      run: dotnet publish ./Dont_Go_Away.Package/Dont_Go_Away.Package.wapproj -c Release -r win-x64 -o ./publish /p:PublishReadyToRun=true
+      run: dotnet publish "Don't Go Away/Don't Go Away.csproj" -c Release -r win-x64 -o ./publish /p:PublishReadyToRun=true
 
     - name: 📤 Upload package artifact
       uses: actions/upload-artifact@v4
