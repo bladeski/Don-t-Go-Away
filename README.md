@@ -1,5 +1,4 @@
-﻿```markdown
-# 📝 Core_Logic.Application.Services.Logger
+﻿# 📝 Core_Logic.Application.Services.Logger
 
 A lightweight, extensible logging service for .NET applications. Designed to integrate seamlessly with the built-in dependency injection system.
 
