@@ -1,6 +1,7 @@
 using System.IO;
 using Core_Logic.Config;
 using Core_Logic.Domain.Interfaces;
+using Core_Logic.Application.Services;
 using Xunit;
 
 public class ConfigLoaderTests
