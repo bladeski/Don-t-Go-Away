@@ -1,83 +1,59 @@
-﻿# 📝 Core_Logic.Application.Services.Logger
+﻿# 🟢 Don't Go Away
 
-A lightweight, extensible logging service for .NET applications. Designed to integrate seamlessly with the built-in dependency injection system.
+A lightweight Windows utility that prevents Microsoft Teams from entering the "Away" status by simulating user activity. Ideal for remote workers, on-call engineers, or anyone who wants to stay green without constant interaction.
+
+---
+
+## 💡 Why Use This?
+
+Microsoft Teams automatically sets your status to "Away" after a period of inactivity. This app keeps your presence active by mimicking subtle user behavior — no hacks, no mouse jigglers, just smart background activity.
+
+---
 
 ## 🚀 Features
 
-- Simple logging interface (`ILogger`)
-- Customizable log output (e.g., console, file, database)
-- Supports dependency injection
-- Easily extendable for structured logging
+- 🟢 Keeps Teams status set to "Available"
+- 🕒 Runs silently in the background
+- ⚙️ Configurable activity intervals
+- 📄 Custom logging system for diagnostics
+- 🖥️ Minimal resource usage
+- 📦 Packaged as a Windows `.msix` installer
+
+---
+
+## 🛠️ Technologies Used
+
+- [.NET 8](https://dotnet.microsoft.com/)
+- [Windows Presentation Foundation (WPF)](https://learn.microsoft.com/en-us/dotnet/desktop/wpf/)
+- Custom-built logging framework
+- MSIX Packaging for clean Windows distribution
+
+---
 
 ## 📦 Installation
 
-Add the `Logger` class and `ILogger` interface to your project under:
+Download the latest `.msix` installer from the [Releases](https://github.com/your-username/dont-go-away/releases) page and double-click to install.
 
-```
-Core_Logic.Application.Services
-```
+Once installed, the app runs in the background and keeps your Teams status active.
 
-Then register it in your `Startup.cs` or `Program.cs`:
+---
 
-```csharp
-services.AddSingleton<ILogger, Logger>();
-```
+## 🧪 Development Setup
 
-If `Logger` has constructor dependencies, make sure those are registered too:
+```bash
+git clone https://github.com/your-username/dont-go-away.git
+cd dont-go-away
+dotnet restore
+dotnet build
 
-```csharp
-services.AddSingleton<IConfigLoader, ConfigLoader>();
-services.AddSingleton<ILogger, Logger>();
-```
+
+To run the app:
+dotnet run --project "Don't Go Away/Don't Go Away.csproj"
 
-## 🛠️ Usage
+You can configure verbosity and log output in Logging/Logger.cs.
 
-Inject `ILogger` into any service or controller:
+📃 License
+MIT License. See LICENSE for details.
 
-```csharp
-public class MyService
-{
-    private readonly ILogger _logger;
-
-    public MyService(ILogger logger)
-    {
-        _logger = logger;
-    }
-
-    public void DoWork()
-    {
-        _logger.Log("Work started.");
-    }
-}
-```
-
-## 🧪 Testing
-
-You can mock `ILogger` for unit tests:
-
-```csharp
-var mockLogger = new Mock<ILogger>();
-mockLogger.Setup(l => l.Log(It.IsAny<string>()));
-```
-
-## 📁 Project Structure
-
-```
-Core_Logic.Application.Services/
-│
-├── ILogger.cs
-└── Logger.cs
-```
-
-## 📌 Notes
-
-- Ensure all constructor dependencies are registered in DI.
-- If you see an error like  
-  `"A suitable constructor for type 'Logger' could not be located..."`  
-  it means DI can't resolve one of the parameters — check your registrations.
-
-## 📄 License
-
-MIT License. Feel free to use and modify.
-
-```
+🙌 Contributing
+Pull requests are welcome! For major changes, please open an issue first to discuss what you'd like to change.
