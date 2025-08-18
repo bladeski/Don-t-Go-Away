@@ -29,6 +29,10 @@ jobs:
     - name: 🧪 Run tests
       run: dotnet test --no-build --verbosity normal
 
+    - name: 📦 Publish Windows Package
+      run: |
+        dotnet publish "Don't Go Away/Don't Go Away.csproj" -c Release -r win-x64 -o ./publish /p:PublishReadyToRun=true
+
     - name: 🏷️ Create Git Tag
       run: |
         git config user.name "github-actions"
