@@ -28,6 +28,13 @@ jobs:
 
     - name: 🧪 Run tests
       run: dotnet test --no-build --verbosity normal
+
+    - name: 🏷️ Create Git Tag
+      run: |
+        git config user.name "github-actions"
+        git config user.email "github-actions@github.com"
+        git tag v1.0.${{ github.run_number }}
+        git push origin v1.0.${{ github.run_number }}
       
     - name: 🚀 Create GitHub Release
       uses: softprops/action-gh-release@v1
