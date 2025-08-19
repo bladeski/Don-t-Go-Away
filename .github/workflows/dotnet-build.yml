@@ -25,6 +25,12 @@ jobs:
       run: |
         Get-ChildItem -Path "." -Recurse -Filter *.pfx | Format-Table FullName, Length, LastWriteTime
 
+    - name: Check certificate
+      shell: pwsh
+      run: |
+        $cert = Get-PfxCertificate "${{ github.workspace }}\cert.pfx"
+        Write-Host "Certificate Subject: $($cert.Subject)"
+
     - name: 🧰 Setup .NET SDK
       uses: actions/setup-dotnet@v3
       with:
