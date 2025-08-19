@@ -34,6 +34,10 @@ jobs:
     - name: 🧪 Run tests
       run: dotnet test --no-build --verbosity normal
 
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.1
+
+
     - name: Build and sign MSIX
       run: |
         msbuild "Don't Go Away\Don't Go Away.csproj" `
