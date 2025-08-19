@@ -47,7 +47,7 @@ jobs:
           /p:GenerateMsixPackageOnBuild=true `
           /p:PackageCertificateKeyFile=cert.pfx `
           /p:PackageCertificatePassword='${{ secrets.PFX_PASSWORD }}'`
-          /p:PublishDir='publish'
+          /p:PublishDir="publish"
 
     - name: 🏷️ Create Git Tag
       run: |
