@@ -60,7 +60,7 @@ jobs:
         /p:PublishProfile=win-x64 `
         /p:GenerateMsixPackageOnBuild=true `
         /p:PackageCertificateKeyFile="${{ github.workspace }}\cert.pfx" `
-        /p:PackageCertificatePassword='${{ secrets.PFX_PASSWORD }}'
+        /p:PackageCertificatePassword="${{ secrets.PFX_PASSWORD }}"
 
 
     - name: 🏷️ Create Git Tag
