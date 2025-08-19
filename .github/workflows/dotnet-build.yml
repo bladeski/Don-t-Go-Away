@@ -20,6 +20,11 @@ jobs:
       run: |
         [IO.File]::WriteAllBytes("cert.pfx", [Convert]::FromBase64String("${{ secrets.PFX_BASE64 }}"))
 
+    - name: 🔍 Locate cert file
+      shell: pwsh
+      run: |
+        Get-ChildItem -Path "." -Recurse -Filter *.pfx | Format-Table FullName, Length, LastWriteTime
+
     - name: 🧰 Setup .NET SDK
       uses: actions/setup-dotnet@v3
       with:
