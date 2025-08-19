@@ -37,17 +37,25 @@ jobs:
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1.1
 
-    - name: Build and sign MSIX
-      shell: pwsh
-      run: |
-        & msbuild "Don't Go Away\Don't Go Away.csproj" `
-          /p:Configuration=Release `
-          /p:PlatformTarget=x64 `
-          /p:RuntimeIdentifier=win-x64 `
-          /p:GenerateMsixPackageOnBuild=true `
-          /p:PackageCertificateKeyFile=cert.pfx `
-          /p:PackageCertificatePassword='${{ secrets.PFX_PASSWORD }}' `
-          /p:PublishDir="publish"
+    # - name: Build and sign MSIX
+    #   shell: pwsh
+    #   run: |
+    #     & msbuild "Don't Go Away\Don't Go Away.csproj" `
+    #       /p:Configuration=Release `
+    #       /p:PlatformTarget=x64 `
+    #       /p:RuntimeIdentifier=win-x64 `
+    #       /p:GenerateMsixPackageOnBuild=true `
+    #       /p:PackageCertificateKeyFile=cert.pfx `
+    #       /p:PackageCertificatePassword='${{ secrets.PFX_PASSWORD }}' `
+    #       /p:PublishDir="publish"
+    - name: Publish MSIX package
+      run: dotnet publish "Don't Go Away\Don't Go Away.csproj" `
+        -c Release `
+        -r win10-x64 `
+        /p:GenerateMsixPackageOnBuild=true `
+        /p:PackageCertificateKeyFile=cert.pfx `
+        /p:PackageCertificatePassword='${{ secrets.PFX_PASSWORD }}'
+
 
     - name: 🏷️ Create Git Tag
       run: |
