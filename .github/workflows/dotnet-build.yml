@@ -28,7 +28,8 @@ jobs:
     - name: Check certificate
       shell: pwsh
       run: |
-        $cert = Get-PfxCertificate "${{ github.workspace }}\cert.pfx"
+        $securePassword = ConvertTo-SecureString "${{ secrets.PFX_PASSWORD }}" -AsPlainText -Force
+        $cert = Get-PfxCertificate -FilePath "${{ github.workspace }}\cert.pfx" -Password $securePassword
         Write-Host "Certificate Subject: $($cert.Subject)"
 
     - name: 🧰 Setup .NET SDK
