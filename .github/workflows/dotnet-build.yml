@@ -15,6 +15,11 @@ jobs:
     - name: 📥 Checkout code
       uses: actions/checkout@v3
 
+    - name: Decode PFX certificate
+      shell: pwsh
+      run: |
+        [IO.File]::WriteAllBytes("cert.pfx", [Convert]::FromBase64String("${{ secrets.PFX_BASE64 }}"))
+
     - name: 🧰 Setup .NET SDK
       uses: actions/setup-dotnet@v3
       with:
@@ -29,9 +34,13 @@ jobs:
     - name: 🧪 Run tests
       run: dotnet test --no-build --verbosity normal
 
-    - name: 📦 Publish Windows Package
+    - name: Build and sign MSIX
       run: |
-        dotnet publish "Don't Go Away/Don't Go Away.csproj" -c Release -r win-x64 -o ./publish /p:PublishReadyToRun=true
+        msbuild "Don't Go Away\Don't Go Away.csproj" `
+        /p:Configuration=Release `
+        /p:GenerateMsixPackageOnBuild=true `
+        /p:PackageCertificateKeyFile=cert.pfx `
+        /p:PackageCertificatePassword=${{ secrets.PFX_PASSWORD }}
 
     - name: 🏷️ Create Git Tag
       run: |
