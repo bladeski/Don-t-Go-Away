@@ -65,6 +65,11 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: 🔍 Locate MSIX file
+      shell: pwsh
+      run: |
+        Get-ChildItem -Path "." -Recurse -Filter *.msix | Format-Table FullName, Length, LastWriteTime
+
     - name: 📤 Upload Windows Package to Release
       uses: softprops/action-gh-release@v1
       with:
