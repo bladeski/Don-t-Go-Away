@@ -65,17 +65,11 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: List contents of publish folder
-      shell: pwsh
-      run: |
-        Get-ChildItem -Path "publish" -Recurse | Format-Table Name, Length, LastWriteTime
-
-
     - name: 📤 Upload Windows Package to Release
       uses: softprops/action-gh-release@v1
       with:
         tag_name: v1.0.${{ github.run_number }}
-        files: ./publish/*.msix
+        files: Don't Go Away\AppPackages\**\*.msix
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
