@@ -51,7 +51,7 @@ jobs:
     - name: Publish MSIX package
       run: dotnet publish "Don't Go Away\Don't Go Away.csproj" `
         -c Release `
-        -r win10-x64 `
+        -r win-x64 `
         /p:GenerateMsixPackageOnBuild=true `
         /p:PackageCertificateKeyFile=cert.pfx `
         /p:PackageCertificatePassword='${{ secrets.PFX_PASSWORD }}'
