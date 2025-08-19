@@ -59,7 +59,7 @@ jobs:
         -r win-x64 `
         /p:PublishProfile=win-x64 `
         /p:GenerateMsixPackageOnBuild=true `
-        /p:PackageCertificateKeyFile=cert.pfx `
+        /p:PackageCertificateKeyFile="${{ github.workspace }}\cert.pfx" `
         /p:PackageCertificatePassword='${{ secrets.PFX_PASSWORD }}'
 
 
