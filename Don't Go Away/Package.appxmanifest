@@ -8,7 +8,7 @@
   IgnorableNamespaces="uap rescap">
 
   <Identity
-    Name="79b837aa-c239-4bb7-9de7-560b655f067f"
+    Name="Bladeski.DontGoAway"
     Publisher="CN=bladeski"
     Version="1.0.0.0" />
 

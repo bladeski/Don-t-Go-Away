@@ -112,7 +112,7 @@ jobs:
         $workspace = "${{ github.workspace }}"
         # Find .msix that isn't a framework/runtime package
         $msix = Get-ChildItem -Path $workspace -Recurse -Filter *.msix |
-          Where-Object { $_.Name -notmatch 'Microsoft\.WindowsAppRuntime' -and $_.Name -notmatch 'Test' } |
+          Where-Object { $_.Name -match 'Bladeski.DontGoAway' -and $_.Extension -eq '.msix' } |
           Sort-Object LastWriteTime -Descending |
           Select-Object -First 1
         if (-not $msix) { throw "No app MSIX found!" }
