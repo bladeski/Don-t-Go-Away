@@ -104,7 +104,7 @@ jobs:
     - name: 🔍 Locate MSIX file
       shell: pwsh
       run: |
-        Get-ChildItem -Path "${{ github.workspace }}" -Recurse -Filter *.msix | ForEach-Object {
+        Get-ChildItem -Path "D:\a\Don-t-Go-Away\Don-t-Go-Away\bin" -Recurse -Filter *.msix | ForEach-Object {
           Write-Host "Found MSIX: $($_.FullName)"
         }
 
