@@ -105,16 +105,21 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Find MSIX
+    - name: Find App MSIX
       id: findmsix
       shell: pwsh
       run: |
         $workspace = "${{ github.workspace }}"
-        $msix = Get-ChildItem -Path $workspace -Recurse -Filter *.msix | Select-Object -First 1
-        if (-not $msix) { throw "No MSIX found!" }
-        Write-Host "Found MSIX: $($msix.FullName)"
+        # Find .msix that isn't a framework/runtime package
+        $msix = Get-ChildItem -Path $workspace -Recurse -Filter *.msix |
+          Where-Object { $_.Name -notmatch 'Microsoft\.WindowsAppRuntime' -and $_.Name -notmatch 'Test' } |
+          Sort-Object LastWriteTime -Descending |
+          Select-Object -First 1
+        if (-not $msix) { throw "No app MSIX found!" }
+        Write-Host "Found App MSIX: $($msix.FullName)"
         $relativePath = $msix.FullName.Substring($workspace.Length + 1) -replace '\\','/'
         echo "msix_path=$relativePath" >> $env:GITHUB_OUTPUT
+
 
 
     - name: Upload MSIX to Release
