@@ -61,6 +61,12 @@ jobs:
     - name: 🧪 Run tests
       run: dotnet test --no-build --verbosity normal
 
+    - name: Check for MakeAppx
+      shell: pwsh
+      run: |
+        Get-Command MakeAppx.exe
+
+
     # - name: Setup MSBuild
     #   uses: microsoft/setup-msbuild@v1.1
 

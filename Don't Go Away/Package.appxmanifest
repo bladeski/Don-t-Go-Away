@@ -9,14 +9,14 @@
 
   <Identity
     Name="79b837aa-c239-4bb7-9de7-560b655f067f"
-    Publisher="CN=bladesj1360"
+    Publisher="CN=bladeski"
     Version="1.0.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="79b837aa-c239-4bb7-9de7-560b655f067f" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
     <DisplayName>Don't Go Away</DisplayName>
-    <PublisherDisplayName>bladesj1360</PublisherDisplayName>
+    <PublisherDisplayName>bladeski</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 

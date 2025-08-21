@@ -7,12 +7,15 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
 	<AppxBundle>Never</AppxBundle>
     <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
-    <PublishProfile>win-$(Platform).pubxml</PublishProfile>
+    <PublishProfile>win-x64.pubxml</PublishProfile>
     <UseWinUI>true</UseWinUI>
     <EnableMsixTooling>true</EnableMsixTooling>
     <Nullable>enable</Nullable>
 	<ApplicationId>winui</ApplicationId>
 	<PlatformTarget>x64</PlatformTarget>
+	<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+	<GenerateMsixPackageOnBuild>true</GenerateMsixPackageOnBuild>
+
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Views\HomePage.xaml" />
@@ -88,7 +91,6 @@
     <PublishTrimmed>false</PublishTrimmed>
     <DefaultLanguage>en-GB</DefaultLanguage>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <GenerateMsixPackageOnBuild>true</GenerateMsixPackageOnBuild>
 	<PublishReadyToRunShowWarnings>true</PublishReadyToRunShowWarnings>
   </PropertyGroup>
 </Project>
