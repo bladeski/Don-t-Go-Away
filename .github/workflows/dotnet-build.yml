@@ -105,16 +105,14 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: 🔍 Locate MSIX file
-      shell: pwsh
+    - name: 🔍 Show MSIX path
       run: |
-        Get-ChildItem -Path "${{ github.workspace }}\Don't Go Away\AppPackages" -Recurse -Filter *.msix |
-        ForEach-Object { Write-Host "Found MSIX: $($_.FullName)" }
+        Get-ChildItem -Path "${{ github.workspace }}\Don't Go Away\bin" -Recurse -Filter *.msix
 
     - name: 📤 Upload Windows Package to Release
       uses: softprops/action-gh-release@v1
       with:
         tag_name: v1.0.${{ github.run_number }}
-        files: "Don't Go Away/AppPackages/**/*.msix"
+        files: "Don't Go Away/bin/**/AppPackages/**/*.msix"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
