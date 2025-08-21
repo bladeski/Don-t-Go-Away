@@ -109,11 +109,13 @@ jobs:
       id: findmsix
       shell: pwsh
       run: |
-        $msix = Get-ChildItem -Path "${{ github.workspace }}" -Recurse -Filter *.msix | Select-Object -First 1
+        $workspace = "${{ github.workspace }}"
+        $msix = Get-ChildItem -Path $workspace -Recurse -Filter *.msix | Select-Object -First 1
         if (-not $msix) { throw "No MSIX found!" }
         Write-Host "Found MSIX: $($msix.FullName)"
-        $relativePath = $msix.FullName.Substring(${{ github.workspace }}.Length + 1) -replace '\\','/'
+        $relativePath = $msix.FullName.Substring($workspace.Length + 1) -replace '\\','/'
         echo "msix_path=$relativePath" >> $env:GITHUB_OUTPUT
+
 
     - name: Upload MSIX to Release
       uses: softprops/action-gh-release@v1
