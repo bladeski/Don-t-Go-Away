@@ -105,6 +105,12 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Debug - list MSIX files
+      shell: pwsh
+      run: |
+        Get-ChildItem -Path "${{ github.workspace }}" -Recurse -Filter *.msix | 
+          ForEach-Object { Write-Host $_.FullName }
+
     - name: Find App MSIX
       id: findmsix
       shell: pwsh
