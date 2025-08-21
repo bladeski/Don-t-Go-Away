@@ -88,5 +88,7 @@
     <PublishTrimmed>false</PublishTrimmed>
     <DefaultLanguage>en-GB</DefaultLanguage>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <GenerateMsixPackageOnBuild>true</GenerateMsixPackageOnBuild>
+	<PublishReadyToRunShowWarnings>true</PublishReadyToRunShowWarnings>
   </PropertyGroup>
 </Project>
