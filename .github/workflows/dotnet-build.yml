@@ -12,13 +12,14 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - name: Locate MakeAppx.exe
+    - name: Add MakeAppx.exe to PATH
       run: |
-        Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Filter MakeAppx.exe
-
-    - name: Locate MakeAppx
-      run: |
-        Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Filter MakeAppx.exe
+        $makeAppxPath = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Filter MakeAppx.exe |
+          Sort-Object LastWriteTime -Descending |
+          Select-Object -First 1 |
+          Split-Path
+        echo "Using MakeAppx.exe from: $makeAppxPath"
+        echo "$makeAppxPath" | Out-File -Append $env:GITHUB_PATH
 
     - name: 📥 Checkout code
       uses: actions/checkout@v3
