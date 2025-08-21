@@ -12,9 +12,9 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - name: Install Windows SDK
+    - name: Locate MakeAppx.exe
       run: |
-        winget install --id Microsoft.WindowsSDK -e --source winget
+        Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Filter MakeAppx.exe
 
     - name: Locate MakeAppx
       run: |
