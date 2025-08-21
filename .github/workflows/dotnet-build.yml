@@ -110,17 +110,14 @@ jobs:
       shell: pwsh
       run: |
         $workspace = "${{ github.workspace }}"
-        # Find .msix that isn't a framework/runtime package
         $msix = Get-ChildItem -Path $workspace -Recurse -Filter *.msix |
-          Where-Object { $_.Name -match 'Bladeski.DontGoAway' -and $_.Extension -eq '.msix' } |
+          Where-Object { $_.DirectoryName -match 'AppPackages' -and $_.Name -notmatch 'WindowsAppRuntime' } |
           Sort-Object LastWriteTime -Descending |
           Select-Object -First 1
         if (-not $msix) { throw "No app MSIX found!" }
         Write-Host "Found App MSIX: $($msix.FullName)"
         $relativePath = $msix.FullName.Substring($workspace.Length + 1) -replace '\\','/'
         echo "msix_path=$relativePath" >> $env:GITHUB_OUTPUT
-
-
 
     - name: Upload MSIX to Release
       uses: softprops/action-gh-release@v1
