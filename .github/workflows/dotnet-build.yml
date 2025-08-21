@@ -45,6 +45,12 @@ jobs:
 
     - name: 🧪 Run tests
       run: dotnet test --no-build --verbosity normal
+    - name: Validate PFX
+      shell: pwsh
+      run: |
+        $securePassword = ConvertTo-SecureString "${{ secrets.PFX_PASSWORD }}" -AsPlainText -Force
+        $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2("${{ github.workspace }}\cert.pfx", $securePassword)
+        Write-Host "Loaded cert: $($cert.Subject)"
 
     # - name: Setup MSBuild
     #   uses: microsoft/setup-msbuild@v1.1
