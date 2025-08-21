@@ -105,14 +105,19 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: 🔍 Show MSIX path
+    - name: Find MSIX
+      id: findmsix
+      shell: pwsh
       run: |
-        Get-ChildItem -Path "${{ github.workspace }}\Don't Go Away\bin" -Recurse -Filter *.msix
+        $msix = Get-ChildItem -Path "${{ github.workspace }}" -Recurse -Filter *.msix | Select-Object -First 1
+        if (-not $msix) { throw "No MSIX found!" }
+        Write-Host "Found MSIX: $($msix.FullName)"
+        echo "msix_path=$($msix.FullName)" >> $env:GITHUB_OUTPUT
 
-    - name: 📤 Upload Windows Package to Release
+    - name: Upload MSIX to Release
       uses: softprops/action-gh-release@v1
       with:
         tag_name: v1.0.${{ github.run_number }}
-        files: "Don't Go Away/bin/**/AppPackages/**/*.msix"
+        files: ${{ steps.findmsix.outputs.msix_path }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
