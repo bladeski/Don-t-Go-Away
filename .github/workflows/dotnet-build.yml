@@ -12,6 +12,14 @@ jobs:
     runs-on: windows-latest
 
     steps:
+    - name: Install Windows SDK
+      run: |
+        winget install --id Microsoft.WindowsSDK -e --source winget
+
+    - name: Locate MakeAppx
+      run: |
+        Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Filter MakeAppx.exe
+
     - name: 📥 Checkout code
       uses: actions/checkout@v3
 
@@ -60,12 +68,6 @@ jobs:
 
     - name: 🧪 Run tests
       run: dotnet test --no-build --verbosity normal
-
-    - name: Check for MakeAppx
-      shell: pwsh
-      run: |
-        Get-Command MakeAppx.exe
-
 
     # - name: Setup MSBuild
     #   uses: microsoft/setup-msbuild@v1.1
