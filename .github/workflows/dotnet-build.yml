@@ -117,7 +117,7 @@ jobs:
       run: |
         $workspace = "${{ github.workspace }}"
         $msix = Get-ChildItem -Path $workspace -Recurse -Filter *.msix |
-          Where-Object { $_.DirectoryName -match 'AppPackages' -and $_.Name -notmatch 'WindowsAppRuntime' } |
+          Where-Object { $_.FullName -match 'Release.*MsixContent\\MSIX' -and $_.Name -notmatch 'WindowsAppRuntime' } |
           Sort-Object LastWriteTime -Descending |
           Select-Object -First 1
         if (-not $msix) { throw "No app MSIX found!" }
