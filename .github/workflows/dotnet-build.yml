@@ -104,7 +104,10 @@ jobs:
     - name: 🔍 Locate MSIX file
       shell: pwsh
       run: |
-        Get-ChildItem -Path "." -Recurse -Filter *.msix | Format-Table FullName, Length, LastWriteTime
+        Get-ChildItem -Path "${{ github.workspace }}" -Recurse -Filter *.msix | ForEach-Object {
+          Write-Host "Found MSIX: $($_.FullName)"
+        }
+
 
     - name: 📤 Upload Windows Package to Release
       uses: softprops/action-gh-release@v1
