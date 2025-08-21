@@ -32,6 +32,21 @@ jobs:
         $cert = Get-PfxCertificate -FilePath "${{ github.workspace }}\cert.pfx" -Password $securePassword
         Write-Host "Certificate Subject: $($cert.Subject)"
 
+    - name: Import certificate to user store
+      shell: pwsh
+      run: |
+        $securePassword = ConvertTo-SecureString "${{ secrets.PFX_PASSWORD }}" -AsPlainText -Force
+        Import-PfxCertificate -FilePath "${{ github.workspace }}\cert.pfx" -CertStoreLocation "Cert:\CurrentUser\My" -Password $securePassword
+
+    - name: Get certificate thumbprint
+      id: cert
+      shell: pwsh
+      run: |
+        $securePassword = ConvertTo-SecureString "${{ secrets.PFX_PASSWORD }}" -AsPlainText -Force
+        $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2("${{ github.workspace }}\cert.pfx", $securePassword)
+        Write-Output "thumbprint=$($cert.Thumbprint)" >> $env:GITHUB_OUTPUT
+
+
     - name: 🧰 Setup .NET SDK
       uses: actions/setup-dotnet@v3
       with:
@@ -45,12 +60,6 @@ jobs:
 
     - name: 🧪 Run tests
       run: dotnet test --no-build --verbosity normal
-    - name: Validate PFX
-      shell: pwsh
-      run: |
-        $securePassword = ConvertTo-SecureString "${{ secrets.PFX_PASSWORD }}" -AsPlainText -Force
-        $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2("${{ github.workspace }}\cert.pfx", $securePassword)
-        Write-Host "Loaded cert: $($cert.Subject)"
 
     # - name: Setup MSBuild
     #   uses: microsoft/setup-msbuild@v1.1
@@ -72,8 +81,8 @@ jobs:
         -r win-x64 `
         /p:PublishProfile=win-x64 `
         /p:GenerateMsixPackageOnBuild=true `
-        /p:PackageCertificateKeyFile="${{ github.workspace }}\cert.pfx" `
-        /p:PackageCertificatePassword="$env:PFX_PASSWORD"
+        /p:PackageCertificateThumbprint="${{ steps.cert.outputs.thumbprint }}"
+
 
 
     - name: 🏷️ Create Git Tag
