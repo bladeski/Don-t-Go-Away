@@ -85,14 +85,14 @@ jobs:
         Write-Host "Using MSBuild at: $msbuildPath"
 
         # Run the build with the right project + settings
-        & $msbuildPath "Don't Go Away\Don't Go Away.csproj" `
+        & $msbuildPath "Packaging\Packaging.wapproj" `
           /p:Configuration=Release `
           /p:Platform=x64 `
-          /p:RuntimeIdentifier=win-x64 `
           /p:GenerateAppxPackageOnBuild=true `
-          /p:GenerateMsixPackageOnBuild=true `
+          /p:AppxPackageDir="msix\" `
           /p:AppxBundle=Never `
           /p:PackageCertificateThumbprint="${{ steps.cert.outputs.thumbprint }}"
+
     # 🔹 Also publish unpackaged for quick runs
     - name: 📤 Publish unpackaged build
       run: |
