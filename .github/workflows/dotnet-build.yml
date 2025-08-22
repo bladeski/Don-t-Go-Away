@@ -66,7 +66,7 @@ jobs:
       run: dotnet build "Don't Go Away\Don't Go Away.csproj" --no-restore -c Release /p:Platform=x64
 
     - name: 🧪 Run tests
-      run: dotnet test "Unit Tests/Unit Tests.csproj" --no-build --verbosity normal
+      run: dotnet test "Unit Tests/Unit Tests.csproj" --verbosity normal
 
 # 📦 Project‑level packaging using Visual Studio MSBuild
     - name: 📦 Build & Package MSIX
