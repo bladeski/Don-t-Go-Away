@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: 🏗️ Build and Test
+    name: 🏗️ Build, Test & Package
     runs-on: windows-latest
 
     steps:
@@ -31,8 +31,7 @@ jobs:
 
     - name: 🔍 Locate cert file
       shell: pwsh
-      run: |
-        Get-ChildItem -Path "." -Recurse -Filter *.pfx | Format-Table FullName, Length, LastWriteTime
+      run: Get-ChildItem -Path "." -Recurse -Filter *.pfx | Format-Table FullName, Length, LastWriteTime
 
     - name: Check certificate
       shell: pwsh
@@ -60,16 +59,16 @@ jobs:
       with:
         dotnet-version: '8.0.x'
 
-    - name: 📦 Restore dependencies with ReadyToRun
+    - name: 📦 Restore dependencies (all projects) for win-x64
       run: dotnet restore /p:RuntimeIdentifier=win-x64 /p:PublishReadyToRun=true
 
-    - name: 🏗️ Build project
-      run: dotnet build --no-restore
+    - name: 🏗️ Build solution (aligned RID)
+      run: dotnet build --no-restore -c Release -r win-x64 /p:Platform=x64
 
     - name: 🧪 Run tests
       run: dotnet test --no-build --verbosity normal
 
-    # 🔹 Forced MSIX Packaging
+    # 🔹 Forced MSIX Packaging with correct RID
     - name: 📦 Build & Package MSIX
       run: |
         dotnet msbuild "Don't Go Away\Don't Go Away.csproj" `
@@ -81,7 +80,7 @@ jobs:
           /p:AppxBundle=Never `
           /p:PackageCertificateThumbprint="${{ steps.cert.outputs.thumbprint }}"
 
-    # 🔹 Optional: also create publish folder for unpackaged runs
+    # 🔹 Also publish unpackaged for quick runs
     - name: 📤 Publish unpackaged build
       run: |
         dotnet publish "Don't Go Away\Don't Go Away.csproj" `
@@ -95,7 +94,7 @@ jobs:
         git config user.email "github-actions@github.com"
         git tag v1.0.${{ github.run_number }}
         git push origin v1.0.${{ github.run_number }}
-  
+
     - name: 🚀 Create GitHub Release
       uses: softprops/action-gh-release@v1
       if: github.ref == 'refs/heads/main'
@@ -108,7 +107,7 @@ jobs:
     - name: Debug - list MSIX files
       shell: pwsh
       run: |
-        Get-ChildItem -Path "${{ github.workspace }}" -Recurse -Filter *.msix | 
+        Get-ChildItem -Path "${{ github.workspace }}" -Recurse -Filter *.msix |
           ForEach-Object { Write-Host $_.FullName }
 
     - name: Find App MSIX
