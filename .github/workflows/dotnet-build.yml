@@ -68,11 +68,31 @@ jobs:
     - name: 🧪 Run tests
       run: dotnet test "Unit Tests/Unit Tests.csproj" --verbosity normal
 
-# 📦 Project‑level packaging using Visual Studio MSBuild
-    - name: 📦 Build & Package MSIX
-      run: >
-        & "C:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe" "Don't Go Away\Don't Go Away.csproj" /p:Configuration=Release /p:Platform=x64 /p:RuntimeIdentifier=win-x64 /p:GenerateAppxPackageOnBuild=true /p:GenerateMsixPackageOnBuild=true /p:AppxBundle=Never /p:PackageCertificateThumbprint=${{ steps.cert.outputs.thumbprint }}
+    - name: 📦 Build & Package MSIX (auto-detect MSBuild)
+      shell: pwsh
+      run: |
+        # Find the latest MSBuild.exe from any Visual Studio installation
+        $msbuildPath = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" `
+          -latest `
+          -products * `
+          -requires Microsoft.Component.MSBuild `
+          -find MSBuild\**\Bin\MSBuild.exe
 
+        if (-not $msbuildPath) {
+          throw "MSBuild.exe not found. Ensure Visual Studio Build Tools with MSIX/UWP workloads are installed."
+        }
+
+        Write-Host "Using MSBuild at: $msbuildPath"
+
+        # Run the build with the right project + settings
+        & $msbuildPath "Don't Go Away\Don't Go Away.csproj" `
+          /p:Configuration=Release `
+          /p:Platform=x64 `
+          /p:RuntimeIdentifier=win-x64 `
+          /p:GenerateAppxPackageOnBuild=true `
+          /p:GenerateMsixPackageOnBuild=true `
+          /p:AppxBundle=Never `
+          /p:PackageCertificateThumbprint="${{ steps.cert.outputs.thumbprint }}"
     # 🔹 Also publish unpackaged for quick runs
     - name: 📤 Publish unpackaged build
       run: |
