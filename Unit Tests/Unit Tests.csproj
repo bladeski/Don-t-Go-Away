@@ -3,6 +3,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <OutputType>Library</OutputType>
+	<Platforms>x64</Platforms>
   </PropertyGroup>
   <PropertyGroup>
 	<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>

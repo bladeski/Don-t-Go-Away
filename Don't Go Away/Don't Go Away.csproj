@@ -15,7 +15,9 @@
 	<PlatformTarget>x64</PlatformTarget>
 	<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
 	<GenerateMsixPackageOnBuild>true</GenerateMsixPackageOnBuild>
-
+	<Platforms>x64</Platforms>
+	<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+	<OutputPath>bin\x64\$(Configuration)\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Views\HomePage.xaml" />
@@ -89,8 +91,10 @@
   <PropertyGroup>
 	<PublishReadyToRun>False</PublishReadyToRun>
     <PublishTrimmed>false</PublishTrimmed>
-    <DefaultLanguage>en-GB</DefaultLanguage>
+    <DefaultLanguage>en-US</DefaultLanguage>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	<PublishReadyToRunShowWarnings>true</PublishReadyToRunShowWarnings>
+	<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+	<AssemblyName>Dont_Go_Away</AssemblyName>
   </PropertyGroup>
 </Project>
