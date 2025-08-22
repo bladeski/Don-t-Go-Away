@@ -59,16 +59,16 @@ jobs:
       with:
         dotnet-version: '8.0.x'
 
-    - name: 📦 Restore dependencies (all projects) for win-x64
-      run: dotnet restore /p:RuntimeIdentifier=win-x64 #/p:PublishReadyToRun=true
+    - name: 📦 Restore dependencies (all projects)
+      run: dotnet restore # no RID here
 
-    - name: 🏗️ Build solution (aligned RID)
-      run: dotnet build --no-restore -c Release -r win-x64 /p:Platform=x64
+    - name: 🏗️ Build solution (no RID)
+      run: dotnet build --no-restore -c Release /p:Platform=x64
 
     - name: 🧪 Run tests
       run: dotnet test --no-build --verbosity normal
 
-    # 🔹 Forced MSIX Packaging with correct RID
+    # 🔹 Forced MSIX Packaging with correct RID (project-level only)
     - name: 📦 Build & Package MSIX
       run: |
         dotnet msbuild "Don't Go Away\Don't Go Away.csproj" `
