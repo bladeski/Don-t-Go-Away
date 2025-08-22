@@ -140,9 +140,9 @@ jobs:
 
         if (-not $msix) { throw "No app MSIX found!" }
 
-        Write-Host "Found MSIX: $($msix.FullName)"
-        # This is the magic line that creates a step output
-        echo "msix_path=$($msix.FullName)" >> $env:GITHUB_OUTPUT
+        $relativePath = $msix.FullName.Substring($workspace.Length + 1) -replace '\\','/'
+        Write-Host "Found MSIX: $($relativePath)"
+        echo "msix_path=$relativePath" >> $env:GITHUB_OUTPUT
 
     - name: Upload MSIX to Release
       uses: softprops/action-gh-release@v1
