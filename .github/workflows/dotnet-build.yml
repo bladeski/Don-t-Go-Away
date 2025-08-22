@@ -123,28 +123,26 @@ jobs:
         Get-ChildItem -Path "${{ github.workspace }}" -Recurse -Filter *.msix |
           ForEach-Object { Write-Host $_.FullName }
 
-    - name: Find App MSIX
+    - name: Find MSIX
       id: findmsix
       shell: pwsh
       run: |
-        # Set your workspace path
         $workspace = "D:\a\Don-t-Go-Away\Don-t-Go-Away"
 
-        # Look only where the packaging step writes its output
         $msix = Get-ChildItem -Path "$workspace\Don't Go Away\msix" -Filter *.msix -Recurse |
-            Where-Object {
-                $_.Name -notmatch 'WindowsAppRuntime' -and
-                $_.Name -notmatch 'Main.msix' -and
-                $_.Name -notmatch 'Singleton.msix'
-            } |
-            Sort-Object LastWriteTime -Descending |
-            Select-Object -First 1
+          Where-Object {
+              $_.Name -notmatch 'WindowsAppRuntime' -and
+              $_.Name -notmatch 'Main.msix' -and
+              $_.Name -notmatch 'Singleton.msix'
+          } |
+          Sort-Object LastWriteTime -Descending |
+          Select-Object -First 1
 
-        if (-not $msix) {
-            throw "No app MSIX found!"
-        }
+        if (-not $msix) { throw "No app MSIX found!" }
 
         Write-Host "Found MSIX: $($msix.FullName)"
+        # This is the magic line that creates a step output
+        echo "msix_path=$($msix.FullName)" >> $env:GITHUB_OUTPUT
 
     - name: Upload MSIX to Release
       uses: softprops/action-gh-release@v1
