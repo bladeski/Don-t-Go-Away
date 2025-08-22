@@ -19,6 +19,23 @@
 	<OutputPath>bin\x64\$(Configuration)\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Content Remove="Assets\AppIcon.altform-lightunplated_targetsize-16.png" />
+    <Content Remove="Assets\AppIcon.altform-lightunplated_targetsize-256.png" />
+    <Content Remove="Assets\AppIcon.altform-lightunplated_targetsize-48.png" />
+    <Content Remove="Assets\AppIcon.altform-unplated_targetsize-16.png" />
+    <Content Remove="Assets\AppIcon.altform-unplated_targetsize-256.png" />
+    <Content Remove="Assets\AppIcon.altform-unplated_targetsize-48.png" />
+    <Content Remove="Assets\AppIcon.scale-100.png" />
+    <Content Remove="Assets\AppIcon.scale-200.png" />
+    <Content Remove="Assets\AppIcon.scale-400.png" />
+    <Content Remove="Assets\AppIcon.targetsize-16.png" />
+    <Content Remove="Assets\AppIcon.targetsize-256.png" />
+    <Content Remove="Assets\AppIcon.targetsize-48.png" />
+    <Content Remove="Assets\MediumTile.scale-100.png" />
+    <Content Remove="Assets\MediumTile.scale-200.png" />
+    <Content Remove="Assets\MediumTile.scale-400.png" />
+  </ItemGroup>
+  <ItemGroup>
     <None Remove="Views\HomePage.xaml" />
     <None Remove="Views\MainWindow.xaml" />
     <None Remove="Views\SettingsPage.xaml" />
