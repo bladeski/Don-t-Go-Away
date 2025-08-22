@@ -60,7 +60,7 @@ jobs:
         dotnet-version: '8.0.x'
 
     - name: 📦 Restore dependencies (all projects) for win-x64
-      run: dotnet restore /p:RuntimeIdentifier=win-x64 /p:PublishReadyToRun=true
+      run: dotnet restore /p:RuntimeIdentifier=win-x64 #/p:PublishReadyToRun=true
 
     - name: 🏗️ Build solution (aligned RID)
       run: dotnet build --no-restore -c Release -r win-x64 /p:Platform=x64
