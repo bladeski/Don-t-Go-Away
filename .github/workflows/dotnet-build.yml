@@ -62,8 +62,8 @@ jobs:
     - name: 📦 Restore dependencies (all projects)
       run: dotnet restore # no RID here
 
-    - name: 🏗️ Build solution (no RID)
-      run: dotnet build --no-restore -c Release /p:Platform=x64
+    - name: 🏗 Build app logic projects (no RID)
+      run: dotnet build "Don't Go Away\Don't Go Away.csproj" --no-restore -c Release /p:Platform=x64
 
     - name: 🧪 Run tests
       run: dotnet test --no-build --verbosity normal
