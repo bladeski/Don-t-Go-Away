@@ -127,20 +127,24 @@ jobs:
       id: findmsix
       shell: pwsh
       run: |
-        $workspace = "${{ github.workspace }}"
-        $msix = Get-ChildItem -Path $workspace -Recurse -Filter *.msix |
-          Where-Object {
-            $_.FullName -match 'MsixContent\\MSIX' -and
-            $_.Name -notmatch 'WindowsAppRuntime' -and
-            $_.Name -notmatch 'Main.msix' -and
-            $_.Name -notmatch 'Singleton.msix'
-          } |
-          Sort-Object LastWriteTime -Descending |
-          Select-Object -First 1
-        if (-not $msix) { throw "No app MSIX found!" }
-        Write-Host "Found App MSIX: $($msix.FullName)"
-        $relativePath = $msix.FullName.Substring($workspace.Length + 1) -replace '\\','/'
-        echo "msix_path=$relativePath" >> $env:GITHUB_OUTPUT
+        # Set your workspace path
+        $workspace = "D:\a\Don-t-Go-Away\Don-t-Go-Away"
+
+        # Look only where the packaging step writes its output
+        $msix = Get-ChildItem -Path "$workspace\Don't Go Away\msix" -Filter *.msix -Recurse |
+            Where-Object {
+                $_.Name -notmatch 'WindowsAppRuntime' -and
+                $_.Name -notmatch 'Main.msix' -and
+                $_.Name -notmatch 'Singleton.msix'
+            } |
+            Sort-Object LastWriteTime -Descending |
+            Select-Object -First 1
+
+        if (-not $msix) {
+            throw "No app MSIX found!"
+        }
+
+        Write-Host "Found MSIX: $($msix.FullName)"
 
     - name: Upload MSIX to Release
       uses: softprops/action-gh-release@v1
